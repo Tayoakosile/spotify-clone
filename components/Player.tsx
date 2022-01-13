@@ -1,11 +1,20 @@
-import React from 'react'
+import { Box, HStack } from "@chakra-ui/react";
+import React from "react";
+import Body from "./Body";
+import Footer from "./Footer";
+import NavBar from "./NavBar";
 
-const Player = () => {
-    return (
-        <div>
-            Welocme to spotify
-        </div>
-    )
-}
+const Player = ({ spotify }: { spotify: object }) => {
+  return (
+    <Box>
+      <HStack as="section" spacing="0">
+        <NavBar />
+        <Body />
+      </HStack>
 
-export default Player
+      <Footer />
+    </Box>
+  );
+};
+
+export default Player;

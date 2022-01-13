@@ -4,32 +4,46 @@ import { reactLocalStorage } from "reactjs-localstorage";
 import SpotifyWebApi from "spotify-web-api-js";
 import { getTokenFromUrl } from "../spotify";
 import Player from "../components/Player";
+import { useDataLayerValue } from "../components/DataLayer";
 
 const spotify = new SpotifyWebApi();
 
 const index = () => {
-  const [token, setToken] = useState<string | null>(null);
+  // const [token, setToken] = useState<string | null | boolean>(null);
+  const [{ user, token }, dispatch] = useDataLayerValue();
+
   useEffect(() => {
     const hash = getTokenFromUrl();
     const _token: string = hash.access_token;
-    const tokenFromLocalStorage: string = reactLocalStorage.get("token");
-    setToken(tokenFromLocalStorage);
-    if (_token !== undefined) {
-      setToken(_token);
-      reactLocalStorage.set("token", _token);
-      spotify.setAccessToken(_token);
+    _token !== undefined && reactLocalStorage.set("token", _token);
+    const tokenFromUrlToLocalStorage = reactLocalStorage.get("token", true);
+
+    if (_token || tokenFromUrlToLocalStorage) {
+      // If token is in url then store it in local storage
+      // Set action to global state
+      dispatch({
+        type: "SET_TOKEN",
+        token: _token || tokenFromUrlToLocalStorage,
+      });
+      // Access token from spotify
+      spotify.setAccessToken(tokenFromUrlToLocalStorage);
+      // Get  my account details
       spotify.getMe().then((user) => {
         console.log(user);
+        console.log(user, "spotify user");
+        dispatch({
+          type: "SET_USER",
+          user,
+        });
       });
     }
-
     window.location.hash = "";
   }, [getTokenFromUrl]);
 
   return (
     <div>
       {/* Spotify Logo */}
-      {token ? <Player /> : <Login />}
+      {token ? <Player spotify={spotify} /> : <Login />}
       {/* Login with spotify button */}
     </div>
   );
