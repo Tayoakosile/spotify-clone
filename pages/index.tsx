@@ -20,6 +20,7 @@ const index = () => {
 
     if (_token || tokenFromUrlToLocalStorage) {
       // If token is in url then store it in local storage
+      console.log("here");
       // Set action to global state
       dispatch({
         type: "SET_TOKEN",
@@ -28,14 +29,40 @@ const index = () => {
       // Access token from spotify
       spotify.setAccessToken(tokenFromUrlToLocalStorage);
       // Get  my account details
-      spotify.getMe().then((user) => {
-        console.log(user);
-        console.log(user, "spotify user");
-        dispatch({
-          type: "SET_USER",
-          user,
+      spotify
+        .getMe()
+        .then((user) => {
+          console.log(user);
+          console.log(user, "spotify user");
+          dispatch({
+            type: "SET_USER",
+            user,
+          });
+        })
+        .catch(() => {
+          reactLocalStorage.remove("token");
+          dispatch({
+            type: "SET_TOKEN",
+            token: null,
+          });
         });
-      });
+
+      spotify
+        .getUserPlaylists()
+        .then((playlists) => {
+          console.log(playlists);
+          dispatch({
+            type: "SET_PLAYLIST",
+            playlist: playlists,
+          });
+        })
+        .catch(() => {
+          reactLocalStorage.remove("token");
+          dispatch({
+            type: "SET_TOKEN",
+            token: null,
+          });
+        });
     }
     window.location.hash = "";
   }, [getTokenFromUrl]);

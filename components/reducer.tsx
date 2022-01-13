@@ -1,5 +1,6 @@
 type Reducer = {
   user: null;
+  type?: {};
   playlist: [];
   playing: boolean;
   token: string;
@@ -7,15 +8,12 @@ type Reducer = {
 
 export const initialState: Reducer = {
   user: null,
-  token: null,
+  token: "",
   playlist: [],
   playing: false,
 };
 
-const reducer = (
-  state: object,
-  action: { type: string; user: object; token: string }
-) => {
+const reducer = (state: object, action: Reducer) => {
   console.log(action, "action");
   switch (action.type) {
     case "SET_USER": {
@@ -28,6 +26,12 @@ const reducer = (
       return {
         ...state,
         token: action.token,
+      };
+    }
+    case "SET_PLAYLIST": {
+      return {
+        ...state,
+        playlist: action.playlist,
       };
     }
     default:
