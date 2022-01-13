@@ -1,12 +1,13 @@
 import React from "react";
 import { Box, chakra } from "@chakra-ui/react";
 import Image from "next/image";
+import NavBarOption from "./NavBarOption";
 
 const ChakraImage = chakra(Image);
 const NavBar = () => {
   return (
     <Box
-      as="header"
+      as="nav"
       color="white"
       minWidth="200px"
       h="100vh"
@@ -22,6 +23,9 @@ const NavBar = () => {
           layout="fill"
         />
       </Box>
+      <NavBarOption title="Home" />
+      <NavBarOption title="Search" />
+      <NavBarOption title="Your Library" />
     </Box>
   );
 };
